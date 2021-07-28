@@ -1,22 +1,32 @@
 /* -------- Beginning of the global variables -------- */
 
-let CardsNumber;
+let NumberOfCards;
 
 /* -------- End of the global variables -------- */
 
 /* -------- Beginning of the functions running at the opening of the page -------- */
 
-PickCardsNumber ()
+PickNumberOfCards ();
+AddCardsIntoGame ();
 
 /* -------- End of the functions running at the opening of the page -------- */
 
 /* -------- Beginning of the functions definitions -------- */
 
-function PickCardsNumber () {
-    while (CardsNumber%2 !== 0 || CardsNumber< 4 || CardsNumber >14){
-        CardsNumber = Number(prompt("Insira um número par de cartas entre 4 e 14"));
+function PickNumberOfCards () {
+    while (NumberOfCards%2 !== 0 || NumberOfCards< 4 || NumberOfCards >14){
+        NumberOfCards = Number(prompt("Insira um número par de cartas entre 4 e 14"));
     }
-    alert("Deu certo!")
+}
+
+function AddCardsIntoGame () {
+    let CardCounter = 0;
+    let CardsList = "";
+    while (CardCounter < NumberOfCards) {
+        CardsList += `<li><img src="Images/front.png"></li>`;
+        CardCounter ++;
+    }
+    document.querySelector(".cards").innerHTML = CardsList;
 }
 
 /* -------- End of the functions definitions -------- */

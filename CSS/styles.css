@@ -32,8 +32,8 @@
 }
 
 .cards li {
-    height: 146px;
-    width: 117px;
+    height: 225px; /*Achei os cartões bem pequenos no tamanho original*/
+    width: 180px; /*Achei os cartões bem pequenos no tamanho original*/
     border:solid 1px #99cea8;
     border-radius: 5px;
     background-color: #A7e9af;
@@ -45,8 +45,8 @@
 }
 
 .cards img {
-    height: 100px;
-    width: 100px;
+    height: 130px;
+    width: 130px;
     object-fit: cover;
 }
 
