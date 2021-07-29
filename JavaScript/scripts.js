@@ -4,14 +4,16 @@ let FrontCardImage = `"Images/front.png"`;
 let BackCardImages = [ 
 `"Images/GIFs/Ex Parrot.gif"`,
 `"Images/GIFs/It's a stiff.gif"`,
-`"Images/GIFs/It's Resting!.gif"`,
+`"Images/GIFs/It rests in peace!.gif"`,
 `"Images/GIFs/Lovely Plummage.gif"`,
 `"Images/GIFs/Parrot is no more.gif"`,
 `"Images/GIFs/Pining for the Fjords.gif"`,
-`"Images/GIFs/Wake up!.gif"`]
-
+`"Images/GIFs/Wake up!.gif"`
+]
 
 let NumberOfCards;
+let CorrectPairs = [];
+let PlayedPair = [];
 
 /* -------- End of the global variables -------- */
 
@@ -62,11 +64,17 @@ function AddCardsIntoGame () {
     document.querySelector(".cards").innerHTML = CardsList;
 }
 
+
+
+
 function TurnCardUp(ThisElement){
-    ThisElement.classList.toggle("turned-up");
+    if (PlayedPair.length === 0){
+        ThisElement.classList.add("turned-up");
+        let ImageSource = ThisElement.querySelector(".back-face img").src;
+        PlayedPair.push(ImageSource)
+    } else{
+    }
 }
-
-
 
 /* -------- End of the functions definitions -------- */
 
