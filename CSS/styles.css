@@ -35,7 +35,7 @@
     width: 180px;
     height: 225px;
     position: relative;
-    margin-right: clamp(17px,2%,100px);
+    margin-right: clamp(17px,10%,100px);
     margin-bottom: 40px;
   }
 

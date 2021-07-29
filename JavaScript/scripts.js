@@ -13,7 +13,8 @@ let BackCardImages = [
 
 let NumberOfCards;
 let CorrectCards = 0;
-let FirstActivedCard;
+let FirstActivedImage;
+let RoundsCounter = 0;
 
 /* -------- End of the global variables -------- */
 
@@ -52,7 +53,7 @@ function AddCardsIntoGame () {
     let CardsList = "";
 
     for (let i = 0 ; i < NumberOfCards; i++) {
-        CardsList +=`<li onclick="TurnCardUp(this)";>
+        CardsList +=`<li onclick="ActivateCard(this)";>
                         <div class="front-face">
                             <img src=${FrontCardImage}/>
                         </div>
@@ -64,26 +65,35 @@ function AddCardsIntoGame () {
     document.querySelector(".cards").innerHTML = CardsList;
 }
 
+function CheckEndOfGame() {
+    if (CorrectCards === NumberOfCards ) {
+        alert(`Parabéns! Você ganhou em ${RoundsCounter} Rodadas!`);
+    }
+}
+
+function TestSecondCard(ClickedLi,ActiveCard) {
+    if (ActiveCard.src === FirstActivedImage.src) { /*If player got a correct pair*/
+        ClickedLi.classList.add("turned-up");
+        CorrectCards += 2;
+    } else {  /*If player got a wrong pair*/
+        FirstActivedImage.parentNode.parentNode.classList.remove("turned-up");
+        ClickedLi.classList.remove("turned-up");
+    }
+    FirstActivedImage = undefined;
+    RoundsCounter += 1;
+    CheckEndOfGame();
+}
 
 
 
-function TurnCardUp(ThisElement){
-    let ActiveCard = ThisElement.querySelector(".back-face img");
-    let CardSource = ActiveCard.src
-    let CardID = ActiveCard.id;
-    if (!FirstActivedCard){ /*If this is the first card played*/
-        ThisElement.classList.add("turned-up");
-        FirstActivedCard = ActiveCard;
-        console.log()
+function ActivateCard(ClickedLi){
+    let ActiveImage = ClickedLi.querySelector(".back-face img");
+    if (!FirstActivedImage){ /*If this is the first card played*/
+        ClickedLi.classList.add("turned-up");
+        FirstActivedImage = ActiveImage;
     } else { /*If this is the second card played*/
-        if (CardID !== FirstActivedCard.id) { /*Making sure the clicked card is not the first one played*/
-            if (CardSource === FirstActivedCard.src) { /*If player got a correct pair*/
-                ThisElement.classList.add("turned-up");
-            } else {  /*If player got a wrong pair*/
-                FirstActivedCard.parentNode.parentNode.classList.remove("turned-up");
-                ThisElement.classList.remove("turned-up");
-            }
-            FirstActivedCard = undefined;
+        if (ActiveImage.id !== FirstActivedImage.id) { /*Making sure the clicked card is not the first one played*/
+            TestSecondCard(ClickedLi,ActiveImage);
         }
     }
 }
