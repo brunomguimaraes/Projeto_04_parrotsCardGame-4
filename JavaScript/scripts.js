@@ -12,8 +12,8 @@ let BackCardImages = [
 ]
 
 let NumberOfCards;
-let CorrectPairs = [];
-let PlayedPair = [];
+let CorrectCards = 0;
+let FirstActivedCard;
 
 /* -------- End of the global variables -------- */
 
@@ -57,7 +57,7 @@ function AddCardsIntoGame () {
                             <img src=${FrontCardImage}/>
                         </div>
                         <div class="back-face">
-                            <img src=${ShuffledCards[i]}>
+                            <img src=${ShuffledCards[i]} id="${i}">
                         </div>
                     </li>`;
     }
@@ -68,11 +68,23 @@ function AddCardsIntoGame () {
 
 
 function TurnCardUp(ThisElement){
-    if (PlayedPair.length === 0){
+    let ActiveCard = ThisElement.querySelector(".back-face img");
+    let CardSource = ActiveCard.src
+    let CardID = ActiveCard.id;
+    if (!FirstActivedCard){ /*If this is the first card played*/
         ThisElement.classList.add("turned-up");
-        let ImageSource = ThisElement.querySelector(".back-face img").src;
-        PlayedPair.push(ImageSource)
-    } else{
+        FirstActivedCard = ActiveCard;
+        console.log()
+    } else { /*If this is the second card played*/
+        if (CardID !== FirstActivedCard.id) { /*Making sure the clicked card is not the first one played*/
+            if (CardSource === FirstActivedCard.src) { /*If player got a correct pair*/
+                ThisElement.classList.add("turned-up");
+            } else {  /*If player got a wrong pair*/
+                FirstActivedCard.parentNode.parentNode.classList.remove("turned-up");
+                ThisElement.classList.remove("turned-up");
+            }
+            FirstActivedCard = undefined;
+        }
     }
 }
 
