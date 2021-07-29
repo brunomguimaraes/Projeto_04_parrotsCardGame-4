@@ -1,5 +1,16 @@
 /* -------- Beginning of the global variables -------- */
 
+let FrontCardImage = `"Images/front.png"`;
+let BackCardImages = [ 
+`"Images/GIFs/Ex Parrot.gif"`,
+`"Images/GIFs/It's a stiff.gif"`,
+`"Images/GIFs/It's Resting!.gif"`,
+`"Images/GIFs/Lovely Plummage.gif"`,
+`"Images/GIFs/Parrot is no more.gif"`,
+`"Images/GIFs/Pining for the Fjords.gif"`,
+`"Images/GIFs/Wake up!.gif"`]
+
+
 let NumberOfCards;
 
 /* -------- End of the global variables -------- */
@@ -19,15 +30,43 @@ function PickNumberOfCards () {
     }
 }
 
+function comparison() { 
+	return Math.random() - 0.5; 
+}
+
+function ShuffleCards() {
+    let ListOfCards = [];
+    let ShuffledBackCardImages = BackCardImages.sort(comparison);
+    for (i=0 ; i < NumberOfCards/2 ; i++){
+        ListOfCards.push(ShuffledBackCardImages[i]);
+        ListOfCards.push(ShuffledBackCardImages[i]);
+    }
+    ListOfCards = ListOfCards.sort(comparison);
+    return ListOfCards
+}
+
 function AddCardsIntoGame () {
-    let CardCounter = 0;
+    let ShuffledCards = ShuffleCards();
     let CardsList = "";
-    while (CardCounter < NumberOfCards) {
-        CardsList += `<li><img src="Images/front.png"></li>`;
-        CardCounter ++;
+
+    for (let i = 0 ; i < NumberOfCards; i++) {
+        CardsList +=`<li onclick="TurnCardUp(this)";>
+                        <div class="front-face">
+                            <img src=${FrontCardImage}/>
+                        </div>
+                        <div class="back-face">
+                            <img src=${ShuffledCards[i]}>
+                        </div>
+                    </li>`;
     }
     document.querySelector(".cards").innerHTML = CardsList;
 }
+
+function TurnCardUp(ThisElement){
+    ThisElement.classList.toggle("turned-up");
+}
+
+
 
 /* -------- End of the functions definitions -------- */
 

@@ -32,23 +32,47 @@
 }
 
 .cards li {
-    height: 225px; /*Achei os cartões bem pequenos no tamanho original*/
-    width: 180px; /*Achei os cartões bem pequenos no tamanho original*/
+    width: 180px;
+    height: 225px;
+    position: relative;
+    margin-right: clamp(17px,2%,100px);
+    margin-bottom: 40px;
+  }
+
+ .cards li div {
+    width: 100%;
+    height: 100%;
     border:solid 1px #99cea8;
     border-radius: 5px;
     background-color: #A7e9af;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: clamp(17px,2%,100px);
-    margin-bottom: 40px;
-}
+    position: absolute;
+    backface-visibility: hidden;
+    transition: all 0.5s;
+    transform-style: preserve-3d;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
 
 .cards img {
-    height: 130px;
-    width: 130px;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
-}
+  }
+
+.back-face {
+    transform: rotateY(180deg);
+  }
+
+.turned-up .back-face {
+    transform: rotateY(0deg);
+  }
+
+.turned-up .front-face {
+    transform: rotateY(-180deg);
+  }
 
 /*--------- End of Desktop CSS ----------- */
 
