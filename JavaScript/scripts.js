@@ -30,6 +30,7 @@ StartTheGame ();
 /* -------- Beginning of the functions definitions -------- */
 
 function PickNumberOfCards () {
+    NumberOfCards = Number(prompt("Insira um número par de cartas entre 4 e 14"));
     while (NumberOfCards%2 !== 0 || NumberOfCards< 4 || NumberOfCards >14){
         NumberOfCards = Number(prompt("Insira um número par de cartas entre 4 e 14"));
     }
