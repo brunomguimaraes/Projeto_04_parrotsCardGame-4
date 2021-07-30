@@ -67,24 +67,29 @@ function AddCardsIntoGame () {
 
 function CheckEndOfGame() {
     if (CorrectCards === NumberOfCards ) {
-        alert(`Parabéns! Você ganhou em ${RoundsCounter} Rodadas!`);
+        setTimeout(function () {
+            alert(`Parabéns! Você ganhou em ${RoundsCounter} Rodadas!`)
+        },300)
     }
+}
+
+function FlipTwoWrongCards (ClickedLi,FirstActivedImage) {
+    FirstActivedLi = FirstActivedImage.parentNode.parentNode;
+    FirstActivedLi.classList.remove("turned-up");
+    ClickedLi.classList.remove("turned-up");
 }
 
 function TestSecondCard(ClickedLi,ActiveCard) {
+    ClickedLi.classList.add("turned-up");
     if (ActiveCard.src === FirstActivedImage.src) { /*If player got a correct pair*/
-        ClickedLi.classList.add("turned-up");
         CorrectCards += 2;
     } else {  /*If player got a wrong pair*/
-        FirstActivedImage.parentNode.parentNode.classList.remove("turned-up");
-        ClickedLi.classList.remove("turned-up");
+        setTimeout(FlipTwoWrongCards,1000,ClickedLi,FirstActivedImage);
     }
-    FirstActivedImage = undefined;
+    FirstActivedImage = undefined; /* Starting a new round*/
     RoundsCounter += 1;
     CheckEndOfGame();
 }
-
-
 
 function ActivateCard(ClickedLi){
     let ActiveImage = ClickedLi.querySelector(".back-face img");
@@ -97,6 +102,5 @@ function ActivateCard(ClickedLi){
         }
     }
 }
-
 /* -------- End of the functions definitions -------- */
 
