@@ -23,7 +23,7 @@ let TimerID;
 /* -------- Beginning of the functions running at the opening of the page -------- */
 
 PickNumberOfCards ();
-AddCardsIntoGame ();
+StartTheGame ();
 
 /* -------- End of the functions running at the opening of the page -------- */
 
@@ -65,17 +65,19 @@ function UpdateTimer(Minutes,Seconds) {
 }
 
 function StartTimer(Clock) {
-    let Seconds = Clock.querySelector(".seconds");
     let Minutes = Clock.querySelector(".minutes");
+    let Seconds = Clock.querySelector(".seconds");
+    Minutes.innerHTML = "00:";
+    Seconds.innerHTML = "00";
+    SecondsCounter = 0;   
     TimerID = setInterval(UpdateTimer,1000,Minutes,Seconds);
 }
 
 
 
-function AddCardsIntoGame () {
+function StartTheGame () {
     let ShuffledCards = ShuffleCards();
     let CardsList = "";
-
     for (let i = 0 ; i < NumberOfCards; i++) {
         CardsList +=`<li onclick="ActivateCard(this)";>
                         <div class="front-face">
@@ -87,6 +89,8 @@ function AddCardsIntoGame () {
                     </li>`;
     }
     document.querySelector(".cards").innerHTML = CardsList;
+    CorrectCards = 0;
+    RoundsCounter = 0;
     StartTimer(document.querySelector(".clock"));
 }
 
@@ -108,9 +112,12 @@ function CheckEndOfGame() {
     if (CorrectCards === NumberOfCards ) {
         clearInterval(TimerID);
         FinalMessage = WriteFinalMessage();
-        setTimeout(function () {
-            alert(FinalMessage)
-        },300)
+        alert(FinalMessage);
+        let CheckRestartGame = prompt("Gostaria de reiniciar o jogo?");
+        if (CheckRestartGame === "Sim" || CheckRestartGame === "sim" || CheckRestartGame === "SIM" || CheckRestartGame === "S"|| CheckRestartGame === "s") {
+            PickNumberOfCards ();
+            StartTheGame ();
+        }
     }
 }
 
@@ -129,7 +136,7 @@ function TestSecondCard(ClickedLi,ActiveCard) {
     }
     FirstActivedImage = undefined; /* Starting a new round*/
     RoundsCounter += 1;
-    CheckEndOfGame();
+    setTimeout(CheckEndOfGame,100);
 }
 
 function ActivateCard(ClickedLi){
