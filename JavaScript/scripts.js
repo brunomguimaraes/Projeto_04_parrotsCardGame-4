@@ -127,19 +127,18 @@ function UpdateRanking(){
     let ResultsString = ``;
     let Player = ActivePlayer.slice();
     let InclusionOfPlayer = false;
-    if (AllPlayers.length === 0) {
-        AllPlayers.push(Player);        
-        PlayersString += `<li>1° - ${Player[0]}</li>`;
-        ResultsString += `<li><span>${Player[1]} Pontos</span></li>`;
-    } else {
-        for (let i = 0 ; i < AllPlayers.length ; i++){
-            if (Player[1] > AllPlayers[i][1] && !InclusionOfPlayer) {
-                AllPlayers.splice(i,0,Player);
-                InclusionOfPlayer = true;
-            }
-            PlayersString += `<li>${i+1}° - ${AllPlayers[i][0]}</li>`;
-            ResultsString += `<li><span>${AllPlayers[i][1]} Pontos</span></li>`;
+    for (let i = 0 ; i < AllPlayers.length ; i++){
+        if (Player[1] > AllPlayers[i][1] && !InclusionOfPlayer) {
+            AllPlayers.splice(i,0,Player);
+            InclusionOfPlayer = true;
         }
+        PlayersString += `<li>${i+1}° - ${AllPlayers[i][0]}</li>`;
+        ResultsString += `<li><span>${AllPlayers[i][1]} Pontos</span></li>`;
+    }
+    if (!InclusionOfPlayer){ /* In case player is current the last place or first player to play */
+        AllPlayers.push(Player);        
+        PlayersString += `<li>${AllPlayers.length}° - ${Player[0]}</li>`;
+        ResultsString += `<li><span>${Player[1]} Pontos</span></li>`;
     }
     Ranking.querySelector(".players").innerHTML = PlayersString;
     Ranking.querySelector(".results").innerHTML = ResultsString;
