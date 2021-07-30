@@ -15,6 +15,8 @@ let NumberOfCards;
 let CorrectCards = 0;
 let FirstActivedImage;
 let RoundsCounter = 0;
+let SecondsCounter = 0;
+let TimerID;
 
 /* -------- End of the global variables -------- */
 
@@ -48,6 +50,28 @@ function ShuffleCards() {
     return ListOfCards
 }
 
+function UpdateTimer(Minutes,Seconds) {
+    SecondsCounter += 1;
+    if( SecondsCounter%60 < 10) {
+        Seconds.innerHTML = "0" + SecondsCounter%60;
+    } else{
+        Seconds.innerHTML = SecondsCounter%60;
+    }
+    Minutes.innerHTML = (SecondsCounter - SecondsCounter%60)/60;
+    if( Minutes.innerHTML < 10) {
+        Minutes.innerHTML = "0" + Minutes.innerHTML;
+    }
+    Minutes.innerHTML += ":"
+}
+
+function StartTimer(Clock) {
+    let Seconds = Clock.querySelector(".seconds");
+    let Minutes = Clock.querySelector(".minutes");
+    TimerID = setInterval(UpdateTimer,1000,Minutes,Seconds);
+}
+
+
+
 function AddCardsIntoGame () {
     let ShuffledCards = ShuffleCards();
     let CardsList = "";
@@ -63,12 +87,29 @@ function AddCardsIntoGame () {
                     </li>`;
     }
     document.querySelector(".cards").innerHTML = CardsList;
+    StartTimer(document.querySelector(".clock"));
+}
+
+function WriteFinalMessage () {
+    let FinalMessage = `Parabéns! Você ganhou em ${RoundsCounter} Rodadas! Seu tempo foi de `;
+    if ((SecondsCounter - SecondsCounter%60) !== 0) {
+        FinalMessage += `${(SecondsCounter - SecondsCounter%60)/60}`;
+        if ((SecondsCounter - SecondsCounter%60)/60 === 1){
+            FinalMessage += ` minuto e `;
+        } else {
+            FinalMessage += ` minutos e `;
+        }
+    }
+    FinalMessage += `${SecondsCounter%60} segundos!`;
+    return FinalMessage;
 }
 
 function CheckEndOfGame() {
     if (CorrectCards === NumberOfCards ) {
+        clearInterval(TimerID);
+        FinalMessage = WriteFinalMessage();
         setTimeout(function () {
-            alert(`Parabéns! Você ganhou em ${RoundsCounter} Rodadas!`)
+            alert(FinalMessage)
         },300)
     }
 }
