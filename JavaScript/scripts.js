@@ -1,7 +1,7 @@
 /* -------- Beginning of the global variables -------- */
 
-let FrontCardImage = `"Images/front.png"`;
-let BackCardImages = [ 
+let frontCardImage = `"Images/front.png"`;
+let backCardImages = [ 
 `"Images/GIFs/Ex Parrot.gif"`,
 `"Images/GIFs/It's a stiff.gif"`,
 `"Images/GIFs/It rests in peace!.gif"`,
@@ -9,183 +9,195 @@ let BackCardImages = [
 `"Images/GIFs/Parrot is no more.gif"`,
 `"Images/GIFs/Pining for the Fjords.gif"`,
 `"Images/GIFs/Wake up!.gif"`
-]
+];
 
-let NumberOfCards;
-let CorrectCards = 0;
-let FirstActivedImage;
-let RoundsCounter = 0;
-let SecondsCounter = 0;
-let TimerID;
-let Ranking = document.querySelector(".ranking-list");
-let AllPlayers= [];
-let ActivePlayer = ["",0] /* [Player Name, Player pontuation] */
+let numberOfCards;
+let correctCards = 0;
+let firstActivedCard;
+let roundsCounter = 0;
+let secondsCounter = 0;
+let timerID;
+let ranking = document.querySelector(".ranking-list");
+let allPlayers= [];
+let activePlayer = {name: "" , score:0};
 
 /* -------- End of the global variables -------- */
 
-/* -------- Beginning of the functions running at the opening of the page -------- */
-
-StartTheGame ();
-
-/* -------- End of the functions running at the opening of the page -------- */
-
 /* -------- Beginning of the functions definitions -------- */
 
-function PickNumberOfCards () {
-    NumberOfCards = Number(prompt("Insira um número par de cartas entre 4 e 14"));
-    while (NumberOfCards%2 !== 0 || NumberOfCards< 4 || NumberOfCards >14){
-        NumberOfCards = Number(prompt("Insira um número par de cartas entre 4 e 14"));
+/* Beginning of functions to start the game */
+
+function startTheGame () {
+    let activePlayerName = prompt("Qual é o seu nome?");
+    while (!activePlayerName) {
+        activePlayerName = prompt("Qual é o seu nome?");
+    }
+    activePlayer.name = activePlayerName; 
+    pickNumberOfCards();
+    distributeCards ()
+    restartCounters ();
+    startTimer(document.querySelector(".clock"));
+}
+
+function pickNumberOfCards () {
+    numberOfCards = Number(prompt("Insira um número par de cartas entre 4 e 14"));
+    while (numberOfCards%2 !== 0 || numberOfCards< 4 || numberOfCards >14){
+        numberOfCards = Number(prompt("Insira um número par de cartas entre 4 e 14"));
     }
 }
 
-function comparison() { 
-    return Math.random() - 0.5; 
-}
-
-function ShuffleCards() {
-    let ListOfCards = [];
-    let ShuffledBackCardImages = BackCardImages.sort(comparison);
-    for (i=0 ; i < NumberOfCards/2 ; i++){
-        ListOfCards.push(ShuffledBackCardImages[i]);
-        ListOfCards.push(ShuffledBackCardImages[i]);
-    }
-    ListOfCards = ListOfCards.sort(comparison);
-    return ListOfCards
-}
-
-function UpdateTimer(Minutes,Seconds) {
-    SecondsCounter += 1;
-    if( SecondsCounter%60 < 10) {
-        Seconds.innerHTML = "0" + SecondsCounter%60;
-    } else{
-        Seconds.innerHTML = SecondsCounter%60;
-    }
-    Minutes.innerHTML = (SecondsCounter - SecondsCounter%60)/60;
-    if( Minutes.innerHTML < 10) {
-        Minutes.innerHTML = "0" + Minutes.innerHTML;
-    }
-    Minutes.innerHTML += ":"
-}
-
-function StartTimer(Clock) {
-    let Minutes = Clock.querySelector(".minutes");
-    let Seconds = Clock.querySelector(".seconds");
-    Minutes.innerHTML = "00:";
-    Seconds.innerHTML = "00";
-    SecondsCounter = 0;   
-    TimerID = setInterval(UpdateTimer,1000,Minutes,Seconds);
-}
-
-
-
-function StartTheGame () {
-    let ActivePlayerName = prompt("Qual é o seu nome?");
-    while (!ActivePlayerName) {
-        ActivePlayerName = prompt("Qual é o seu nome?");
-    }
-    ActivePlayer[0] = ActivePlayerName; 
-    PickNumberOfCards ();
-    let ShuffledCards = ShuffleCards();
-    let CardsHTML = "";
-    for (let i = 0 ; i < NumberOfCards; i++) {
-        CardsHTML +=`<li onclick="ActivateCard(this)";>
+function distributeCards () {
+    let shuffledCards = shuffleCards();
+    let cardsHTML = "";
+    for (let i = 0 ; i < numberOfCards; i++) {
+        cardsHTML +=`<li onclick="activateCard(this)";>
                         <div class="front-face">
-                            <img src=${FrontCardImage}/>
+                            <img src=${frontCardImage}/>
                         </div>
                         <div class="back-face">
-                            <img src=${ShuffledCards[i]} id="${i}">
+                            <img src=${shuffledCards[i]} id="${i}">
                         </div>
                     </li>`;
     }
-    document.querySelector(".cards").innerHTML = CardsHTML;
-    CorrectCards = 0;
-    RoundsCounter = 0;
-    StartTimer(document.querySelector(".clock"));
+    document.querySelector(".cards").innerHTML = cardsHTML;
 }
 
-function CalculateActiveResult() {
-    let ActivePlayerResult = (NumberOfCards*100) - (RoundsCounter*10) - (SecondsCounter);
-    ActivePlayer[1] = ActivePlayerResult
+function comparison () { 
+    return Math.random() - 0.5; 
 }
 
-function WriteFinalMessage () {
-    let FinalMessage = `Parabéns, ${ActivePlayer[0]}! Você ganhou em ${RoundsCounter} rodadas e o seu tempo foi de `;
-    if ((SecondsCounter - SecondsCounter%60) !== 0) {
-        FinalMessage += `${(SecondsCounter - SecondsCounter%60)/60}`;
-        if ((SecondsCounter - SecondsCounter%60)/60 === 1){
-            FinalMessage += ` minuto e `;
-        } else {
-            FinalMessage += ` minutos e `;
+function shuffleCards () {
+    let listOfCards = [];
+    let shuffledBackCardImages = backCardImages.sort(comparison);
+    for (i=0 ; i < numberOfCards/2 ; i++){
+        listOfCards.push(shuffledBackCardImages[i]);
+        listOfCards.push(shuffledBackCardImages[i]);
+    }
+    listOfCards = listOfCards.sort(comparison);
+    return listOfCards;
+}
+
+function restartCounters () {
+    secondsCounter = 0;
+    correctCards = 0;
+    roundsCounter = 0;
+}
+
+function startTimer (clock) {
+    let minutes = clock.querySelector(".minutes");
+    let seconds = clock.querySelector(".seconds");
+    minutes.innerHTML = "00:";
+    seconds.innerHTML = "00";
+    timerID = setInterval(updateTimer,1000,minutes,seconds);
+}
+
+function updateTimer (minutes,seconds) {
+    secondsCounter += 1;
+    if( secondsCounter%60 < 10) {
+        seconds.innerHTML = "0" + secondsCounter%60;
+    } else{
+        seconds.innerHTML = secondsCounter%60;
+    }
+    minutes.innerHTML = (secondsCounter - secondsCounter%60)/60;
+    if( minutes.innerHTML < 10) {
+        minutes.innerHTML = "0" + minutes.innerHTML;
+    }
+    minutes.innerHTML += ":";
+}
+
+/* End of functions to start the game */
+
+/* Beginning of functions resulting of playing the game */
+
+function activateCard (clickedCard) {
+    if (!clickedCard.classList.contains("turned-up")){
+        clickedCard.classList.add("turned-up");
+        if (!firstActivedCard){ /*If this is the first card played*/
+            firstActivedCard = clickedCard;
+        } else { /*If this is the second card played*/
+            testSecondCard(clickedCard);
         }
     }
-    FinalMessage += `${SecondsCounter%60} segundos! Você fez incríveis ${ActivePlayer[1]} pontos!`;
-    return FinalMessage;
 }
 
-function UpdateRanking(){
-    let PlayersString = ``;
-    let ResultsString = ``;
-    let Player = ActivePlayer.slice();
-    let InclusionOfPlayer = false;
-    for (let i = 0 ; i < AllPlayers.length ; i++){
-        if (Player[1] > AllPlayers[i][1] && !InclusionOfPlayer) {
-            AllPlayers.splice(i,0,Player);
-            InclusionOfPlayer = true;
-        }
-        PlayersString += `<li>${i+1}° - ${AllPlayers[i][0]}</li>`;
-        ResultsString += `<li><span>${AllPlayers[i][1]} Pontos</span></li>`;
-    }
-    if (!InclusionOfPlayer){ /* In case player is current the last place or first player to play */
-        AllPlayers.push(Player);        
-        PlayersString += `<li>${AllPlayers.length}° - ${Player[0]}</li>`;
-        ResultsString += `<li><span>${Player[1]} Pontos</span></li>`;
-    }
-    Ranking.querySelector(".players").innerHTML = PlayersString;
-    Ranking.querySelector(".results").innerHTML = ResultsString;
-}
-
-function CheckEndOfGame() {
-    if (CorrectCards === NumberOfCards ) {
-        clearInterval(TimerID);
-        CalculateActiveResult();
-        UpdateRanking();
-        FinalMessage = WriteFinalMessage();
-        alert(FinalMessage);
-        let CheckRestartGame = prompt("Gostaria de reiniciar o jogo?");
-        let AcceptableRestartAnswers = ["Sim","sim","SIM","S","s","Yes","yes","YES","Y","y"]
-        if (AcceptableRestartAnswers.includes(CheckRestartGame)) {
-            StartTheGame ();
-        }
-    }
-}
-
-function FlipTwoWrongCards (ClickedLi,FirstActivedImage) {
-    FirstActivedLi = FirstActivedImage.parentNode.parentNode;
-    FirstActivedLi.classList.remove("turned-up");
-    ClickedLi.classList.remove("turned-up");
-}
-
-function TestSecondCard(ClickedLi,ActiveCard) {
-    if (ActiveCard.src === FirstActivedImage.src) { /*If player got a correct pair*/
-        CorrectCards += 2;
+function testSecondCard (clickedCard) {
+    let activeImage = clickedCard.querySelector(".back-face img");
+    let firstActivedImage = firstActivedCard.querySelector(".back-face img");
+    if (activeImage.src === firstActivedImage.src) { /*If player got a correct pair*/
+        correctCards += 2;
     } else {  /*If player got a wrong pair*/
-        setTimeout(FlipTwoWrongCards,1000,ClickedLi,FirstActivedImage);
+        setTimeout(turnWrongCardsDown,1000,clickedCard,firstActivedCard);
     }
-    FirstActivedImage = false; /* Starting a new round*/
-    RoundsCounter += 1;
-    setTimeout(CheckEndOfGame,100);
+    firstActivedCard = false; /* Starting a new round*/
+    roundsCounter += 1;
+    if (correctCards === numberOfCards ) {
+        setTimeout(endOfGame,100)
+    }
 }
 
-function ActivateCard(ClickedLi){
-    let ActiveImage = ClickedLi.querySelector(".back-face img");
-    ClickedLi.classList.add("turned-up");
-    if (!FirstActivedImage){ /*If this is the first card played*/
-        FirstActivedImage = ActiveImage;
-    } else { /*If this is the second card played*/
-        if (ActiveImage.id !== FirstActivedImage.id) { /*Making sure the clicked card is not the first one played*/
-            TestSecondCard(ClickedLi,ActiveImage);
-        }
+function turnWrongCardsDown (clickedCard,firstActivedCard) {
+    firstActivedCard.classList.remove("turned-up");
+    clickedCard.classList.remove("turned-up");
+}
+
+function endOfGame () {
+    clearInterval(timerID);
+    calculateActiveScore();
+    updateRanking();
+    finalMessage = writeFinalMessage();
+    alert(finalMessage);
+    let checkRestartGame = prompt("Gostaria de reiniciar o jogo?");
+    let acceptableRestartAnswers = ["Sim","sim","SIM","S","s","Yes","yes","YES","Y","y"];
+    if (acceptableRestartAnswers.includes(checkRestartGame)) {
+        startTheGame ();
     }
 }
+
+function calculateActiveScore () {
+    let activePlayerScore = (numberOfCards*100) - (roundsCounter*10) - (secondsCounter);
+    activePlayer.score = activePlayerScore;
+}
+
+function writeFinalMessage () {
+    let finalMessage = `Parabéns, ${activePlayer.name}! Você ganhou em ${roundsCounter} rodadas e o seu tempo foi de `;
+    if ((secondsCounter - secondsCounter%60) !== 0) {
+        finalMessage += `${(secondsCounter - secondsCounter%60)/60}`;
+        if ((secondsCounter - secondsCounter%60)/60 === 1){
+            finalMessage += ` minuto e `;
+        } else {
+            finalMessage += ` minutos e `;
+        }
+    }
+    finalMessage += `${secondsCounter%60} segundos! Você fez incríveis ${activePlayer.score} pontos!`;
+    return finalMessage;
+}
+
+function updateRanking () {
+    let playersString = ``;
+    let scoresString = ``;
+    let mostRecentPlayer = Object.assign({},activePlayer); /* Needs to be saved as a copy so it doesn't change when activePlayer is updated */
+    let inclusionOfPlayer = false;
+    for (let i = 0 ; i < allPlayers.length ; i++){
+        if (mostRecentPlayer.score > allPlayers[i].score && !inclusionOfPlayer) { 
+            allPlayers.splice(i,0,mostRecentPlayer); /* Increases the array length, next allPlayers[i].score will be the same as the one just checked*/
+            inclusionOfPlayer = true; /* Important, otherwise it'd keep on adding mostRecentPlayer to the list */
+        }
+        playersString += `<li>${i+1}° - ${allPlayers[i].name}</li>`;
+        scoresString += `<li><span>${allPlayers[i].score} Pontos</span></li>`;
+    }
+    if (!inclusionOfPlayer){ /* In case mostRecentPlayer is currently the last place or first one to play */
+        allPlayers.push(mostRecentPlayer);        
+        playersString += `<li>${allPlayers.length}° - ${mostRecentPlayer.name}</li>`;
+        scoresString += `<li><span>${mostRecentPlayer.score} Pontos</span></li>`;
+    }
+    ranking.querySelector(".players").innerHTML = playersString;
+    ranking.querySelector(".scores").innerHTML = scoresString;
+}
+
 /* -------- End of the functions definitions -------- */
 
+/* -------- Beginning of the functions running at the opening of the page -------- */
+
+startTheGame ();
+
+/* -------- End of the functions running at the opening of the page -------- */

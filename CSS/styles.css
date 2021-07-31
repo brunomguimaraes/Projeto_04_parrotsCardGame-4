@@ -2,25 +2,29 @@
   box-sizing: border-box;
 }
 
+body{
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+}
+
+
 /*--------- Beginning of Desktop CSS ----------- */
 
-body{
+.container {
   background-color: #EEF9BF;
   min-height: 100vh;
   width: 100%;
   display: flex;
 }
 
-.container {
+.game-block {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: calc(100% - 300px);
 }
 
-.container .title {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
+.game-block .title {
   font-size: 56px;
   color: #75b79e;
   text-transform: uppercase;
@@ -80,7 +84,7 @@ body{
     transform: rotateY(-180deg);
 }
 
-.ranking-bar{
+.ranking-bar {
   width: 305px;
   padding-left: 5px;
   border-left: solid 1px #99cea8;
@@ -88,8 +92,6 @@ body{
 }
 
 .ranking-bar .title {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
   font-size: 36px;
   color: #75b79e;
   text-transform: uppercase;
@@ -101,9 +103,8 @@ body{
   display: flex;
   justify-content: space-between;
 }
+
 .ranking-bar .sub-title span {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
   font-size: 20px;
   color: #75b79e;
   text-transform: uppercase;
@@ -111,12 +112,9 @@ body{
   text-align: center;
 }
 
-
 .ranking-list {
   width: 100%;
   padding: 10px 0px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
   font-size: 13px;
   color: #75b79e;
   display: flex;
@@ -141,7 +139,7 @@ body{
 }
 
 
-.clock{
+.clock {
   height: 35px;
   width: 80px;
   background-color: #333333;
@@ -152,8 +150,7 @@ body{
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
+
   font-size: 20px;
 }
 
@@ -161,20 +158,21 @@ body{
 
 /*--------- Beginning of Mobile CSS ----------- */
 
-@media(max-width:730px){
+@media(max-width:730px) {
 
-  body{
+  .container {
     flex-direction: column;
   }
-  .container,
+
+  .game-block,
   .ranking-bar {
     width: 100%;
   }
     
   .title {
-      font-size: 36px;
-      padding: 0px 48px;
-      text-align: center;
+    font-size: 36px;
+    padding: 0px 48px;
+    text-align: center;
   }
 
   .cards {
@@ -183,12 +181,11 @@ body{
     padding: 48px 0px 0px;
   }
 
-    .cards li {
-      margin-right: 0px;
-    }
+  .cards li {
+    margin-right: 0px;
+  }
 
-
-  .clock{
+  .clock {
     height: 80px;
     width: 40px;
     right: 0px;
@@ -197,7 +194,7 @@ body{
     padding-left: 5px;
   }
 
-  .ranking-bar{
+  .ranking-bar {
     width: 100%;
     padding-left: 0px;
     border-left: none;
