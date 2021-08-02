@@ -112,23 +112,23 @@ function updateTimer (minutes,seconds) {
 function activateCard (clickedCard) {
     if (!clickedCard.classList.contains("turned-up")){
         clickedCard.classList.add("turned-up");
-        if (!firstActivedCard){ /*If this is the first card played*/
+        if (!firstActivedCard){ 
             firstActivedCard = clickedCard;
-        } else { /*If this is the second card played*/
+        } else {
             testSecondCard(clickedCard);
         }
     }
 }
 
 function testSecondCard (clickedCard) {
-    let activeImage = clickedCard.querySelector(".back-face img");
+    let secondActivatedImage = clickedCard.querySelector(".back-face img");
     let firstActivedImage = firstActivedCard.querySelector(".back-face img");
-    if (activeImage.src === firstActivedImage.src) { /*If player got a correct pair*/
+    if (secondActivatedImage.src === firstActivedImage.src) {
         correctCards += 2;
-    } else {  /*If player got a wrong pair*/
+    } else {
         setTimeout(turnWrongCardsDown,1000,clickedCard,firstActivedCard);
     }
-    firstActivedCard = false; /* Starting a new round*/
+    firstActivedCard = false;
     roundsCounter += 1;
     if (correctCards === numberOfCards ) {
         setTimeout(endOfGame,100)
@@ -146,11 +146,8 @@ function endOfGame () {
     updateRanking();
     finalMessage = writeFinalMessage();
     alert(finalMessage);
-    let checkRestartGame = prompt("Gostaria de reiniciar o jogo?");
-    let acceptableRestartAnswers = ["Sim","sim","SIM","S","s","Yes","yes","YES","Y","y"];
-    if (acceptableRestartAnswers.includes(checkRestartGame)) {
-        startTheGame ();
-    }
+    setTimeout(RestartGame,100)
+
 }
 
 function calculateActiveScore () {
@@ -175,23 +172,32 @@ function writeFinalMessage () {
 function updateRanking () {
     let playersString = ``;
     let scoresString = ``;
-    let mostRecentPlayer = Object.assign({},activePlayer); /* Needs to be saved as a copy so it doesn't change when activePlayer is updated */
+    let mostRecentPlayer = Object.assign({},activePlayer);
     let inclusionOfPlayer = false;
-    for (let i = 0 ; i < allPlayers.length ; i++){
-        if (mostRecentPlayer.score > allPlayers[i].score && !inclusionOfPlayer) { 
-            allPlayers.splice(i,0,mostRecentPlayer); /* Increases the array length, next allPlayers[i].score will be the same as the one just checked*/
-            inclusionOfPlayer = true; /* Important, otherwise it'd keep on adding mostRecentPlayer to the list */
+    for (let i = 0 ; i <= allPlayers.length ; i++){
+        if (!inclusionOfPlayer && i === allPlayers.length) {
+            allPlayers.push(mostRecentPlayer)
+            inclusionOfPlayer = true;
+        } else if (!inclusionOfPlayer && mostRecentPlayer.score > allPlayers[i].score) { 
+            allPlayers.splice(i,0,mostRecentPlayer);
+            inclusionOfPlayer = true;
         }
+    }
+    for (let i = 0 ; i < allPlayers.length ; i++){
         playersString += `<li>${i+1}° - ${allPlayers[i].name}</li>`;
         scoresString += `<li><span>${allPlayers[i].score} Pontos</span></li>`;
     }
-    if (!inclusionOfPlayer){ /* In case mostRecentPlayer is currently the last place or first one to play */
-        allPlayers.push(mostRecentPlayer);        
-        playersString += `<li>${allPlayers.length}° - ${mostRecentPlayer.name}</li>`;
-        scoresString += `<li><span>${mostRecentPlayer.score} Pontos</span></li>`;
-    }
+
     ranking.querySelector(".players").innerHTML = playersString;
     ranking.querySelector(".scores").innerHTML = scoresString;
+}
+
+function RestartGame() {
+    let checkRestartGame = prompt("Gostaria de reiniciar o jogo?");
+    let acceptableRestartAnswers = ["Sim","sim","SIM","S","s","Yes","yes","YES","Y","y"];
+    if (acceptableRestartAnswers.includes(checkRestartGame)) {
+        startTheGame ();
+    }
 }
 
 /* -------- End of the functions definitions -------- */
